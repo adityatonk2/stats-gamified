@@ -1,26 +1,308 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-base:     #0C0C10;
+  --bg-surface:  #13131A;
+  --bg-elevated: #1A1A24;
+  --bg-glass:    rgba(255, 255, 255, 0.04);
+
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong:  rgba(255, 255, 255, 0.18);
+
+  --accent-indigo:      #6C63FF;
+  --accent-indigo-glow: rgba(108, 99, 255, 0.35);
+  --accent-indigo-dim:  rgba(108, 99, 255, 0.15);
+
+  --accent-gold:      #F59E0B;
+  --accent-gold-glow: rgba(245, 158, 11, 0.30);
+  --accent-gold-dim:  rgba(245, 158, 11, 0.12);
+
+  --accent-emerald:      #10B981;
+  --accent-emerald-glow: rgba(16, 185, 129, 0.30);
+  --accent-emerald-dim:  rgba(16, 185, 129, 0.12);
+
+  --accent-rose:      #F43F5E;
+  --accent-rose-glow: rgba(244, 63, 94, 0.25);
+  --accent-rose-dim:  rgba(244, 63, 94, 0.12);
+
+  --text-primary:   #F1F0FF;
+  --text-secondary: #9B99B8;
+  --text-muted:     #5C5A78;
+  --text-gold:      #F59E0B;
+  --text-indigo:    #A5A1FF;
 }
 
+/* ─── Tailwind v4 Theme ─── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-cinzel-decorative), 'Cinzel Decorative', serif;
+  --font-heading: var(--font-cinzel), 'Cinzel', serif;
+  --font-sans:    var(--font-dm-sans), 'DM Sans', sans-serif;
+  --font-mono:    var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  --color-background: var(--bg-base);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── Noise Overlay ─── */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Ambient Blobs (added in layout) ─── */
+.ambient-blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Glass Cards ─── */
+.glass-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-default);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.glass-card-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.glass-card-indigo {
+  background: var(--bg-glass);
+  border: 1px solid rgba(108, 99, 255, 0.25);
+  box-shadow: 0 0 32px var(--accent-indigo-glow), inset 0 0 20px rgba(108, 99, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.glass-card-gold {
+  background: var(--bg-glass);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  box-shadow: 0 0 32px var(--accent-gold-glow), inset 0 0 20px rgba(245, 158, 11, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.glass-card-emerald {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 20px var(--accent-emerald-glow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+.glass-card-rose {
+  background: rgba(244, 63, 94, 0.06);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  box-shadow: 0 0 20px var(--accent-rose-glow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+}
+
+/* ─── Button Base ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: 1px solid rgba(108, 99, 255, 0.4);
+  background: linear-gradient(135deg, #6C63FF 0%, #5048E5 100%);
+  box-shadow: 0 0 20px rgba(108, 99, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: white;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 35px rgba(108, 99, 255, 0.6), 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4), 0 4px 15px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+/* ─── XP Bar shimmer ─── */
+@keyframes xp-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.xp-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  animation: xp-shimmer 2.5s ease-in-out infinite;
+}
+
+/* ─── Floating particles ─── */
+@keyframes float-up {
+  0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0; }
+  8%   { opacity: 0.5; }
+  92%  { opacity: 0.5; }
+  100% { transform: translateY(-5vh) rotate(540deg);  opacity: 0; }
+}
+
+@keyframes float-drift {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(28px); }
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: float-up linear infinite, float-drift ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ─── Card flip (3D) ─── */
+.flip-container {
+  perspective: 1000px;
+}
+
+.flip-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flip-container:hover .flip-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(108, 99, 255, 0.3);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(108, 99, 255, 0.55);
+}
+
+/* ─── Screen flash overlay ─── */
+.screen-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* ─── Badge variants ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-cinzel), 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.badge-gold   { background: var(--accent-gold-dim);    color: var(--accent-gold);    border: 1px solid rgba(245,158,11,0.3); }
+.badge-indigo { background: var(--accent-indigo-dim);  color: var(--text-indigo);    border: 1px solid rgba(108,99,255,0.3); }
+.badge-muted  { background: rgba(255,255,255,0.06);    color: var(--text-muted);     border: 1px solid var(--border-subtle); }
+
+/* ─── Rarity borders ─── */
+.rarity-common { border-color: var(--border-default); }
+.rarity-rare   { border-color: rgba(108, 99, 255, 0.5); box-shadow: 0 0 20px var(--accent-indigo-glow); }
+.rarity-epic   { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 0 24px var(--accent-gold-glow); }
+
+/* ─── Safe area for mobile nav ─── */
+.safe-pb {
+  padding-bottom: max(80px, calc(64px + env(safe-area-inset-bottom)));
 }

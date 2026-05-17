@@ -1,0 +1,94 @@
+{
+  "id": "probability",
+  "title": "Probability",
+  "region": "Probability",
+  "difficulty": 2,
+  "emoji": "🎲",
+  "unlocks": ["correlation"],
+  "lore": "Beyond the Central Tendency mountains lies the Probability Realm — where nothing is certain, and everything has a chance. The Probability Sphinx guards this territory, posing riddles with no deterministic answers. Here, you learn to think in odds, in chances, in likelihoods. The most powerful statisticians are those who make confident decisions despite uncertainty.",
+  "explanation": "Probability is just the math of 'what are the chances?' Roll a die — there are 6 possible outcomes, and only 1 gives you a 6. So the probability of rolling a 6 is 1/6 ≈ 0.167 or 16.7%. Probability always lives between 0 (impossible) and 1 (certain). A business predicting sales, a doctor assessing risk, an investor evaluating returns — all of them use probability.",
+  "formula": {
+    "label": "Classical Probability",
+    "expression": "P(A) = Favorable Outcomes / Total Outcomes",
+    "breakdown": [
+      { "symbol": "P(A)", "meaning": "Probability of event A occurring" },
+      { "symbol": "Favorable", "meaning": "Number of outcomes where A happens" },
+      { "symbol": "Total", "meaning": "Total number of equally likely outcomes" },
+      { "symbol": "Range", "meaning": "Always between 0 and 1 (or 0% to 100%)" }
+    ]
+  },
+  "example": {
+    "question": "A bag has 3 red and 5 blue balls. What is P(red)?",
+    "steps": [
+      "Step 1: Count favorable outcomes → 3 red balls",
+      "Step 2: Count total outcomes → 3 + 5 = 8 balls total",
+      "Step 3: P(red) = 3/8 = 0.375",
+      "There's a 37.5% chance of picking a red ball. Not guaranteed — but quantified."
+    ],
+    "answer": "3/8 = 0.375"
+  },
+  "quiz": [
+    {
+      "id": "q1",
+      "question": "A coin is tossed. What is P(Heads)?",
+      "options": ["0", "1/4", "1/2", "1"],
+      "correct": 2,
+      "explanation": "1 favorable outcome (heads) out of 2 total (heads or tails) = 1/2. Classic."
+    },
+    {
+      "id": "q2",
+      "question": "Probability of an impossible event is:",
+      "options": ["1", "0.5", "0", "∞"],
+      "correct": 2,
+      "explanation": "Impossible = can never happen = P = 0. Certain event = always happens = P = 1."
+    },
+    {
+      "id": "q3",
+      "question": "A card is drawn from 52 cards. P(Ace) = ?",
+      "options": ["1/52", "1/26", "1/13", "4/52"],
+      "correct": 2,
+      "explanation": "4 aces in 52 cards. P(Ace) = 4/52 = 1/13. Both answers are technically correct — simplify!"
+    },
+    {
+      "id": "q4",
+      "question": "P(A) + P(not A) always equals:",
+      "options": ["0", "0.5", "1", "2"],
+      "correct": 2,
+      "explanation": "Complementary rule: either A happens or it doesn't. These two exhaust all possibilities, so they sum to 1."
+    }
+  ],
+  "bossQuiz": {
+    "name": "THE PROBABILITY SPHINX",
+    "hp": 3,
+    "flavor": "Asks riddles in chance and likelihood. Defeats those who think in absolutes.",
+    "questions": [
+      {
+        "question": "Two dice are rolled. P(sum = 7) = ?",
+        "options": ["1/6", "5/36", "6/36", "7/36"],
+        "correct": 2,
+        "damage": 1,
+        "explanation": "Pairs summing to 7: (1,6)(2,5)(3,4)(4,3)(5,2)(6,1) = 6 outcomes out of 36 total. P = 6/36 = 1/6."
+      },
+      {
+        "question": "P(A) = 0.4, P(B) = 0.3, A and B are mutually exclusive. P(A or B) = ?",
+        "options": ["0.12", "0.3", "0.7", "1.0"],
+        "correct": 2,
+        "damage": 1,
+        "explanation": "For mutually exclusive events, P(A or B) = P(A) + P(B) = 0.4 + 0.3 = 0.7."
+      },
+      {
+        "question": "If P(A) = 0.6, what is P(not A)?",
+        "options": ["0.6", "0.4", "1.6", "0"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "P(not A) = 1 - P(A) = 1 - 0.6 = 0.4. The complement always exists."
+      }
+    ]
+  },
+  "formulaCard": {
+    "id": "probability-card",
+    "rarity": "rare",
+    "title": "Classical Probability",
+    "expression": "P(A) = Favorable / Total"
+  }
+}

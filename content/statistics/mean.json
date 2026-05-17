@@ -1,0 +1,94 @@
+{
+  "id": "mean",
+  "title": "The Mean",
+  "region": "Central Tendency",
+  "difficulty": 1,
+  "emoji": "🍕",
+  "unlocks": ["median"],
+  "lore": "In the ancient realm of Central Tendency, before any student could wield the power of statistics, they faced the First Guardian — the Mean Warden. This colossus holds the secret of balance: how one number can speak for thousands. Without mastering the Mean, the gates to Median and Mode remain sealed forever.",
+  "explanation": "Imagine 5 friends splitting a pizza bill equally. If the total bill is ₹500, each pays ₹100. That ₹100 IS the mean — one number that represents everyone fairly. The mean doesn't care about who ate more slices. It creates perfect mathematical equality. In statistics, we use it whenever we want a single number to fairly represent an entire group.",
+  "formula": {
+    "label": "Arithmetic Mean",
+    "expression": "X̄ = ΣX / N",
+    "breakdown": [
+      { "symbol": "X̄", "meaning": "The mean (read: 'X-bar')" },
+      { "symbol": "Σ", "meaning": "Sigma — means 'sum of all'" },
+      { "symbol": "X", "meaning": "Each individual value" },
+      { "symbol": "N", "meaning": "Total count of values" }
+    ]
+  },
+  "example": {
+    "question": "Marks of 5 students: 40, 50, 60, 70, 80. Find the mean.",
+    "steps": [
+      "Step 1: Add all marks → 40 + 50 + 60 + 70 + 80 = 300",
+      "Step 2: Count the students → N = 5",
+      "Step 3: Apply the formula → Mean = 300 ÷ 5 = 60",
+      "The mean mark is 60. Every student is 'represented' by this one number."
+    ],
+    "answer": "60"
+  },
+  "quiz": [
+    {
+      "id": "q1",
+      "question": "5 students scored 10, 20, 30, 40, 50. What is the mean?",
+      "options": ["25", "30", "35", "40"],
+      "correct": 1,
+      "explanation": "Sum = 10+20+30+40+50 = 150. N = 5. Mean = 150 ÷ 5 = 30. The middle ground of the group."
+    },
+    {
+      "id": "q2",
+      "question": "Which formula correctly calculates the Arithmetic Mean?",
+      "options": ["ΣX / N", "ΣX × N", "N / ΣX", "ΣX − N"],
+      "correct": 0,
+      "explanation": "Mean = Sum of all values divided by count. Always divide, never multiply."
+    },
+    {
+      "id": "q3",
+      "question": "If the mean of 4 numbers is 25, what is their sum?",
+      "options": ["25", "50", "75", "100"],
+      "correct": 3,
+      "explanation": "Mean = Sum ÷ N → Sum = Mean × N = 25 × 4 = 100. Work backwards from mean to find sum."
+    },
+    {
+      "id": "q4",
+      "question": "A shopkeeper sold items worth ₹200, ₹400, ₹600 on 3 days. What was the mean daily sale?",
+      "options": ["₹300", "₹400", "₹500", "₹600"],
+      "correct": 1,
+      "explanation": "Sum = 200+400+600 = 1200. N = 3. Mean = 1200 ÷ 3 = ₹400 per day."
+    }
+  ],
+  "bossQuiz": {
+    "name": "THE MEAN WARDEN",
+    "hp": 3,
+    "flavor": "Ancient guardian of Central Tendency. Defeats those who confuse sum with average.",
+    "questions": [
+      {
+        "question": "Which measure of central tendency uses ALL values in its computation?",
+        "options": ["Mode", "Median", "Mean", "Range"],
+        "correct": 2,
+        "damage": 1,
+        "explanation": "The Mean uses every single value. That's its strength — and weakness when outliers exist."
+      },
+      {
+        "question": "Mean of 6, 8, 10, 12 is 9. A new value of 5 is added. What is the new mean?",
+        "options": ["7.5", "8", "8.2", "9"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "Old sum = 9×4 = 36. New sum = 36+5 = 41. New N = 5. New mean = 41÷5 = 8.2. Wait — 8.2! The correct answer is 8.2."
+      },
+      {
+        "question": "If every value in a dataset increases by 10, what happens to the mean?",
+        "options": ["Stays the same", "Increases by 10", "Increases by N×10", "Doubles"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "When a constant is added to every value, the mean shifts by that same constant. Simple and elegant."
+      }
+    ]
+  },
+  "formulaCard": {
+    "id": "mean-card",
+    "rarity": "common",
+    "title": "Arithmetic Mean",
+    "expression": "X̄ = ΣX / N"
+  }
+}

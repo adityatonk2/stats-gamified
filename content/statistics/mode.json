@@ -1,0 +1,94 @@
+{
+  "id": "mode",
+  "title": "The Mode",
+  "region": "Central Tendency",
+  "difficulty": 1,
+  "emoji": "👑",
+  "unlocks": ["probability"],
+  "lore": "Every realm has its most popular champion — the one who shows up again and again, earning the crown through sheer repetition. In the land of data, that champion is the Mode. The Mode Oracle doesn't care about sums or positions. It asks one question: who appears the most? And that value rules.",
+  "explanation": "Think of the mode as the class topper by popularity — not grades. If you ask 100 students their favourite subject and 45 say Maths, 30 say English, and 25 say Science — the Mode is Maths. It won by frequency, not by value. This is why mode is the ONLY measure you can use for non-numeric data, like favourite colours or brand preferences.",
+  "formula": {
+    "label": "Mode",
+    "expression": "Mo = Most Frequently Occurring Value",
+    "breakdown": [
+      { "symbol": "Mo", "meaning": "The mode" },
+      { "symbol": "Frequency", "meaning": "Number of times a value appears" },
+      { "symbol": "Unimodal", "meaning": "One mode exists" },
+      { "symbol": "Bimodal", "meaning": "Two modes exist (both equally frequent)" }
+    ]
+  },
+  "example": {
+    "question": "Find mode: 3, 5, 7, 5, 3, 5, 9, 2",
+    "steps": [
+      "Step 1: Count each value — 3 appears 2 times, 5 appears 3 times, 7 appears 1 time, 9 appears 1 time, 2 appears 1 time",
+      "Step 2: Find the most frequent → 5 appears 3 times (highest)",
+      "Step 3: Mode = 5",
+      "5 shows up the most. It is the most 'popular' value in this dataset."
+    ],
+    "answer": "5"
+  },
+  "quiz": [
+    {
+      "id": "q1",
+      "question": "Find mode: 2, 4, 4, 6, 6, 6, 8",
+      "options": ["4", "6", "8", "2"],
+      "correct": 1,
+      "explanation": "6 appears 3 times — more than any other value. Mode = 6. Count carefully!"
+    },
+    {
+      "id": "q2",
+      "question": "Which measure works for qualitative (non-numeric) data?",
+      "options": ["Mean", "Median", "Mode", "Range"],
+      "correct": 2,
+      "explanation": "Mode only! You can't average or sort qualitative data like favourite colours, but you can count them."
+    },
+    {
+      "id": "q3",
+      "question": "Data: 5, 10, 15, 20, 25. What is the mode?",
+      "options": ["5", "15", "25", "No mode"],
+      "correct": 3,
+      "explanation": "Every value appears exactly once. No value repeats, so there is no mode in this dataset."
+    },
+    {
+      "id": "q4",
+      "question": "Data: 2, 2, 3, 3, 4. This data is called:",
+      "options": ["Unimodal", "Bimodal", "Trimodal", "No mode"],
+      "correct": 1,
+      "explanation": "Both 2 and 3 appear twice. Two modes = bimodal distribution."
+    }
+  ],
+  "bossQuiz": {
+    "name": "THE MODE ORACLE",
+    "hp": 3,
+    "flavor": "The voice of the majority. Cannot be defeated by those who confuse frequency with value.",
+    "questions": [
+      {
+        "question": "Shoe sizes sold in a store: 6,7,8,8,8,9,9,10. A shopkeeper should stock which size most?",
+        "options": ["6", "7", "8", "9"],
+        "correct": 2,
+        "damage": 1,
+        "explanation": "Mode = 8 (appears 3 times). The mode tells businesses what's most popular. Pure practical power."
+      },
+      {
+        "question": "For grouped data, the class with the HIGHEST frequency is called:",
+        "options": ["Mean class", "Modal class", "Median class", "Frequency class"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "The class with the highest frequency is the modal class. From it, we calculate the mode."
+      },
+      {
+        "question": "A dataset has mode = 50 and mean = 70. This suggests:",
+        "options": ["Data is symmetric", "Data is skewed right (positively)", "Data is skewed left (negatively)", "No pattern"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "When Mean > Mode, data is positively skewed — the tail pulls toward higher values."
+      }
+    ]
+  },
+  "formulaCard": {
+    "id": "mode-card",
+    "rarity": "common",
+    "title": "Mode",
+    "expression": "Mo = Most Frequent Value"
+  }
+}

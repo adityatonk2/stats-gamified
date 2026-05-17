@@ -1,0 +1,94 @@
+{
+  "id": "median",
+  "title": "The Median",
+  "region": "Central Tendency",
+  "difficulty": 1,
+  "emoji": "📏",
+  "unlocks": ["mode"],
+  "lore": "The Median stands as the incorruptible middle child of statistics. Unlike the Mean, it cannot be manipulated by extreme values. In the Hall of Central Tendency, the Median Sentinel watches quietly at the center — unmoved by chaos on either side. Wealthy billionaires cannot inflate it. Destitute villages cannot drag it down. It simply finds the middle truth.",
+  "explanation": "Imagine 5 people standing in a height line from shortest to tallest. The person standing exactly in the middle IS the median. Even if the tallest person grows by 2 feet, the median doesn't change — because it's about position, not value. This makes median incredibly powerful when your data has extreme outliers, like income statistics.",
+  "formula": {
+    "label": "Median (Odd N)",
+    "expression": "M = Value at [(N+1)/2]th position",
+    "breakdown": [
+      { "symbol": "M", "meaning": "The median value" },
+      { "symbol": "N", "meaning": "Total number of observations" },
+      { "symbol": "(N+1)/2", "meaning": "Position of the middle item" }
+    ]
+  },
+  "example": {
+    "question": "Find median of: 3, 7, 2, 9, 5",
+    "steps": [
+      "Step 1: Arrange in ascending order → 2, 3, 5, 7, 9",
+      "Step 2: Count items → N = 5 (odd number)",
+      "Step 3: Find middle position → (5+1) ÷ 2 = 3rd position",
+      "Step 4: 3rd value in sorted list → 5",
+      "Median = 5. It sits in the exact center of the data."
+    ],
+    "answer": "5"
+  },
+  "quiz": [
+    {
+      "id": "q1",
+      "question": "Find the median of: 4, 1, 7, 3, 9",
+      "options": ["3", "4", "5", "7"],
+      "correct": 1,
+      "explanation": "Sorted: 1, 3, 4, 7, 9. N=5. Middle position = (5+1)/2 = 3rd. 3rd value = 4."
+    },
+    {
+      "id": "q2",
+      "question": "What MUST you do before finding the median?",
+      "options": ["Multiply all values", "Arrange in order", "Find the sum", "Count only odd numbers"],
+      "correct": 1,
+      "explanation": "Always sort first! Median is about position, and positions only make sense in ordered data."
+    },
+    {
+      "id": "q3",
+      "question": "For even number of observations, median is:",
+      "options": ["The higher middle value", "The lower middle value", "Average of two middle values", "The last value"],
+      "correct": 2,
+      "explanation": "When N is even, there are two middle values. Take their average to find the median."
+    },
+    {
+      "id": "q4",
+      "question": "Data: 10, 20, 30, 40, 1000. Which measure is more representative?",
+      "options": ["Mean (220)", "Median (30)", "Both equally", "Neither"],
+      "correct": 1,
+      "explanation": "Median = 30 (middle value). Mean = 220 (pulled up by the outlier 1000). Median tells the true story here."
+    }
+  ],
+  "bossQuiz": {
+    "name": "THE MEDIAN SENTINEL",
+    "hp": 3,
+    "flavor": "Unmoved guardian of the center. Defeats those who skip the sorting step.",
+    "questions": [
+      {
+        "question": "Find median: 15, 3, 8, 21, 10, 6",
+        "options": ["8", "9", "10", "10.5"],
+        "correct": 1,
+        "damage": 1,
+        "explanation": "Sorted: 3, 6, 8, 10, 15, 21. N=6 (even). Two middle values: 8 and 10. Median = (8+10)/2 = 9."
+      },
+      {
+        "question": "Income data: ₹10K, ₹15K, ₹20K, ₹25K, ₹500K. Median income = ?",
+        "options": ["₹20K", "₹25K", "₹114K", "₹500K"],
+        "correct": 0,
+        "damage": 1,
+        "explanation": "Sorted data, N=5. 3rd value = ₹20K. The billionaire doesn't move the median. That's its power."
+      },
+      {
+        "question": "If the median of 5 values (sorted) is 15, which position holds value 15?",
+        "options": ["1st", "2nd", "3rd", "5th"],
+        "correct": 2,
+        "damage": 1,
+        "explanation": "(N+1)/2 = (5+1)/2 = 3. The median is always at the 3rd position for N=5."
+      }
+    ]
+  },
+  "formulaCard": {
+    "id": "median-card",
+    "rarity": "common",
+    "title": "Median Formula",
+    "expression": "M = Value at [(N+1)/2]th"
+  }
+}
