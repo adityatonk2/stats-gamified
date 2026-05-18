@@ -31,11 +31,17 @@ interface GameState {
 }
 
 const XP_PER_LEVEL = 200;
-
-const DEFAULT_UNLOCKED = ["mean"];
+const FIRST_TOPIC = "mean";
 
 function calculateLevel(xp: number): number {
   return Math.floor(xp / XP_PER_LEVEL) + 1;
+}
+
+// Ensure the first topic is always unlocked regardless of stored state
+function ensureFirstTopicUnlocked(topics: string[]): string[] {
+  if (!Array.isArray(topics) || topics.length === 0) return [FIRST_TOPIC];
+  if (!topics.includes(FIRST_TOPIC)) return [FIRST_TOPIC, ...topics];
+  return topics;
 }
 
 export const useGameStore = create<GameState>()(
@@ -46,15 +52,14 @@ export const useGameStore = create<GameState>()(
       streak: 0,
       lastStudyDate: "",
       completedTopics: [],
-      unlockedTopics: DEFAULT_UNLOCKED,
+      unlockedTopics: [FIRST_TOPIC],
       formulaCardsCollected: [],
       soundEnabled: false,
       quizHistory: [],
 
       addXP: (amount) => {
         const newXP = get().xp + amount;
-        const newLevel = calculateLevel(newXP);
-        set({ xp: newXP, level: newLevel });
+        set({ xp: newXP, level: calculateLevel(newXP) });
       },
 
       completeTopic: (topicId) => {
@@ -87,9 +92,7 @@ export const useGameStore = create<GameState>()(
         const { lastStudyDate, streak } = get();
         const today = new Date().toISOString().split("T")[0];
         const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-
         if (lastStudyDate === today) return;
-
         if (lastStudyDate === yesterday) {
           set({ streak: streak + 1, lastStudyDate: today });
         } else {
@@ -108,7 +111,7 @@ export const useGameStore = create<GameState>()(
           streak: 0,
           lastStudyDate: "",
           completedTopics: [],
-          unlockedTopics: DEFAULT_UNLOCKED,
+          unlockedTopics: [FIRST_TOPIC],
           formulaCardsCollected: [],
           quizHistory: [],
         });
@@ -116,6 +119,22 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: "statquest-game-storage",
+      // Merge stored state with defaults; guards against corrupted/partial storage
+      merge: (persisted, current) => {
+        const stored = persisted as Partial<GameState>;
+        return {
+          ...current,
+          ...stored,
+          // Always ensure first topic is unlocked, even if storage is corrupted
+          unlockedTopics: ensureFirstTopicUnlocked(
+            Array.isArray(stored.unlockedTopics) ? stored.unlockedTopics : []
+          ),
+          // Ensure arrays are never undefined from corrupted storage
+          completedTopics: Array.isArray(stored.completedTopics) ? stored.completedTopics : [],
+          formulaCardsCollected: Array.isArray(stored.formulaCardsCollected) ? stored.formulaCardsCollected : [],
+          quizHistory: Array.isArray(stored.quizHistory) ? stored.quizHistory : [],
+        };
+      },
     }
   )
 );

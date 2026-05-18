@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel, Cinzel_Decorative, DM_Sans, JetBrains_Mono } from "next/font/google";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import "./globals.css";
 
 const cinzelDecorative = Cinzel_Decorative({
@@ -91,7 +92,9 @@ export default function RootLayout({
 
         {/* Main content */}
         <div className="relative z-10">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </div>
       </body>
     </html>

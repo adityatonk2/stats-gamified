@@ -37,21 +37,24 @@ type BossState = "intro" | "fighting" | "won" | "lost";
 function PlayerHP({ current, max }: { current: number; max: number }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-heading text-xs tracking-widest uppercase" style={{ color: "var(--text-muted)" }}>
+      <span
+        className="font-heading text-xs tracking-widest uppercase"
+        style={{ color: "var(--text-muted)" }}
+      >
         Your Resolve
       </span>
       <div className="flex gap-1.5">
         {Array.from({ length: max }).map((_, i) => (
           <motion.div
             key={i}
-            initial={{ scale: 1 }}
             animate={i >= current ? { scale: [1, 0.7, 1] } : { scale: 1 }}
             transition={{ duration: 0.3 }}
             className="w-5 h-5 rounded-full"
             style={{
-              background: i < current
-                ? "linear-gradient(135deg, var(--accent-indigo), #9C8FFF)"
-                : "var(--bg-elevated)",
+              background:
+                i < current
+                  ? "linear-gradient(135deg, var(--accent-indigo), #9C8FFF)"
+                  : "var(--bg-elevated)",
               border: `1.5px solid ${i < current ? "rgba(108,99,255,0.6)" : "var(--border-subtle)"}`,
               boxShadow: i < current ? "0 0 8px var(--accent-indigo-glow)" : "none",
             }}
@@ -79,10 +82,17 @@ function BossContent({ data }: { data: TopicData }) {
   const [answered, setAnswered] = useState(false);
   const [bossState, setBossState] = useState<BossState>("intro");
   const [bossShake, setBossShake] = useState(false);
+  // Prevents "Continue Battle" from being clickable during the win transition window
+  const [pendingWin, setPendingWin] = useState(false);
 
   const question = boss.questions[currentQ % boss.questions.length];
 
-  // Dynamic background intensity based on boss HP
+  // Normalize correct index (guard against string values in JSON)
+  const correctIndex =
+    typeof question.correct === "number"
+      ? question.correct
+      : parseInt(String(question.correct), 10);
+
   const bossIntensity = bossHP / boss.hp;
   const bgGlow =
     bossIntensity > 0.66
@@ -91,22 +101,27 @@ function BossContent({ data }: { data: TopicData }) {
       ? "rgba(249,115,22,0.07)"
       : "rgba(245,158,11,0.07)";
 
-  function startFight() { setBossState("fighting"); }
+  function startFight() {
+    setBossState("fighting");
+  }
 
   function handleSelect(i: number) {
-    if (answered) return;
+    if (answered || pendingWin) return;
     setSelected(i);
     setAnswered(true);
-    const correct = i === question.correct;
+    const correct = i === correctIndex;
 
     if (correct) {
-      const newHP = bossHP - question.damage;
+      const newHP = Math.max(0, bossHP - (question.damage ?? 1));
       setBossHP(newHP);
       setBossShake(true);
       flash("correct");
       setTimeout(() => setBossShake(false), 500);
       if (soundEnabled) Sounds.bossHit();
+
       if (newHP <= 0) {
+        // Lock "Continue Battle" immediately — before the 800ms transition
+        setPendingWin(true);
         setTimeout(() => {
           setBossState("won");
           addXP(100);
@@ -117,16 +132,18 @@ function BossContent({ data }: { data: TopicData }) {
         }, 800);
       }
     } else {
-      const newHP = playerHP - 1;
+      const newHP = Math.max(0, playerHP - 1);
       setPlayerHP(newHP);
       flash("wrong");
       if (soundEnabled) Sounds.wrongAnswer();
-      if (newHP <= 0) setTimeout(() => setBossState("lost"), 800);
+      if (newHP <= 0) {
+        setTimeout(() => setBossState("lost"), 800);
+      }
     }
   }
 
   function handleNext() {
-    if (bossState !== "fighting") return;
+    if (bossState !== "fighting" || pendingWin) return;
     setCurrentQ((q) => q + 1);
     setSelected(null);
     setAnswered(false);
@@ -138,6 +155,7 @@ function BossContent({ data }: { data: TopicData }) {
     setCurrentQ(0);
     setSelected(null);
     setAnswered(false);
+    setPendingWin(false);
     setBossState("intro");
   }
 
@@ -158,7 +176,10 @@ function BossContent({ data }: { data: TopicData }) {
         <Link href={`/quiz/${data.id}`} className="font-sans text-sm" style={{ color: "var(--text-muted)" }}>
           ← Quiz
         </Link>
-        <span className="font-heading text-xs tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>
+        <span
+          className="font-heading text-xs tracking-[0.2em] uppercase"
+          style={{ color: "var(--text-muted)" }}
+        >
           Boss Fight
         </span>
         <div className="w-16" />
@@ -207,25 +228,39 @@ function BossContent({ data }: { data: TopicData }) {
               {boss.flavor}
             </motion.p>
 
-            {/* Battle stats */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               className="glass-card-elevated p-5 mb-8 w-full max-w-xs rounded-2xl"
             >
-              <p className="font-heading text-center mb-4" style={{ fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--text-muted)" }}>
+              <p
+                className="font-heading text-center mb-4"
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                }}
+              >
                 Battle Briefing
               </p>
               {[
                 { label: "Boss Strength", val: `${boss.hp} HP`, color: "var(--accent-rose)" },
-                { label: "Your Resolve",  val: `${PLAYER_HP} HP`, color: "var(--text-indigo)" },
-                { label: "Victory Reward",val: "+100 XP", color: "var(--accent-gold)" },
+                { label: "Your Resolve", val: `${PLAYER_HP} HP`, color: "var(--text-indigo)" },
+                { label: "Victory Reward", val: "+100 XP", color: "var(--accent-gold)" },
               ].map(({ label, val, color }) => (
-                <div key={label} className="flex justify-between items-center py-2.5"
-                  style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                  <span className="font-sans text-sm" style={{ color: "var(--text-secondary)" }}>{label}</span>
-                  <span className="font-mono text-sm font-bold" style={{ color }}>{val}</span>
+                <div
+                  key={label}
+                  className="flex justify-between items-center py-2.5"
+                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                >
+                  <span className="font-sans text-sm" style={{ color: "var(--text-secondary)" }}>
+                    {label}
+                  </span>
+                  <span className="font-mono text-sm font-bold" style={{ color }}>
+                    {val}
+                  </span>
                 </div>
               ))}
             </motion.div>
@@ -263,18 +298,21 @@ function BossContent({ data }: { data: TopicData }) {
             exit={{ opacity: 0 }}
             className="flex-1 flex flex-col max-w-[600px] mx-auto w-full px-4 sm:px-6 py-5"
           >
-            {/* HP area */}
             <div className="space-y-3 mb-6">
-              <BossHealthBar current={bossHP} max={boss.hp} label={boss.name} type="boss" shake={bossShake} />
+              <BossHealthBar
+                current={bossHP}
+                max={boss.hp}
+                label={boss.name}
+                type="boss"
+                shake={bossShake}
+              />
               <div className="flex items-center justify-between pt-1">
                 <PlayerHP current={playerHP} max={PLAYER_HP} />
               </div>
             </div>
 
-            {/* Divider */}
             <div className="h-px mb-5" style={{ background: "var(--border-subtle)" }} />
 
-            {/* Boss avatar small */}
             <motion.div
               animate={prefersReduced ? {} : { y: [0, -6, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
@@ -292,11 +330,25 @@ function BossContent({ data }: { data: TopicData }) {
                 exit={{ opacity: 0, x: prefersReduced ? 0 : -30 }}
                 transition={{ type: "spring", stiffness: 320, damping: 28 }}
               >
-                <p className="font-heading mb-2.5" style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(244,63,94,0.6)" }}>
+                <p
+                  className="font-heading mb-2.5"
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "rgba(244,63,94,0.6)",
+                  }}
+                >
                   {boss.name} attacks with:
                 </p>
-                <h2 className="font-sans font-semibold mb-5 leading-snug"
-                  style={{ fontSize: "clamp(16px, 3.5vw, 20px)", color: "var(--text-primary)", lineHeight: 1.5 }}>
+                <h2
+                  className="font-sans font-semibold mb-5 leading-snug"
+                  style={{
+                    fontSize: "clamp(16px, 3.5vw, 20px)",
+                    color: "var(--text-primary)",
+                    lineHeight: 1.5,
+                  }}
+                >
                   {question.question}
                 </h2>
 
@@ -307,7 +359,7 @@ function BossContent({ data }: { data: TopicData }) {
                       text={opt}
                       index={i}
                       selected={selected === i}
-                      correct={answered ? i === question.correct : null}
+                      correct={answered ? i === correctIndex : null}
                       onClick={() => handleSelect(i)}
                       disabled={answered}
                     />
@@ -319,22 +371,35 @@ function BossContent({ data }: { data: TopicData }) {
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`p-4 rounded-xl mb-5 ${selected === question.correct ? "glass-card-emerald" : "glass-card-rose"}`}
+                      className={`p-4 rounded-xl mb-5 ${
+                        selected === correctIndex ? "glass-card-emerald" : "glass-card-rose"
+                      }`}
                     >
-                      <p className="font-sans text-sm font-semibold mb-1"
-                        style={{ color: selected === question.correct ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
-                        {selected === question.correct
-                          ? `⚔ Boss takes ${question.damage} damage!`
+                      <p
+                        className="font-sans text-sm font-semibold mb-1"
+                        style={{
+                          color:
+                            selected === correctIndex
+                              ? "var(--accent-emerald)"
+                              : "var(--accent-rose)",
+                        }}
+                      >
+                        {selected === correctIndex
+                          ? `⚔ Boss takes ${question.damage ?? 1} damage!`
                           : "You took a hit. Stay focused."}
                       </p>
-                      <p className="font-sans text-sm" style={{ color: "var(--text-secondary)", lineHeight: 1.65 }}>
+                      <p
+                        className="font-sans text-sm"
+                        style={{ color: "var(--text-secondary)", lineHeight: 1.65 }}
+                      >
                         {question.explanation}
                       </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {answered && bossState === "fighting" && (
+                {/* Only show Continue button when fighting AND not in win-pending state */}
+                {answered && bossState === "fighting" && !pendingWin && (
                   <motion.button
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -350,6 +415,18 @@ function BossContent({ data }: { data: TopicData }) {
                   >
                     Continue Battle →
                   </motion.button>
+                )}
+
+                {/* Show a non-clickable status during win transition */}
+                {answered && pendingWin && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="w-full py-4 rounded-xl font-sans font-semibold text-sm text-center"
+                    style={{ color: "var(--accent-gold)", letterSpacing: "0.05em" }}
+                  >
+                    ⚔ Boss defeated...
+                  </motion.div>
                 )}
               </motion.div>
             </AnimatePresence>
@@ -387,13 +464,26 @@ function BossContent({ data }: { data: TopicData }) {
             >
               Boss Defeated
             </motion.h1>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-              className="font-sans text-sm mb-3" style={{ color: "var(--text-muted)" }}>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="font-sans text-sm mb-3"
+              style={{ color: "var(--text-muted)" }}
+            >
               {boss.name} has been vanquished.
             </motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
               className="font-mono font-bold mb-8"
-              style={{ fontSize: "clamp(32px, 6vw, 48px)", color: "var(--accent-gold)", textShadow: "0 0 30px var(--accent-gold-glow)" }}>
+              style={{
+                fontSize: "clamp(32px, 6vw, 48px)",
+                color: "var(--accent-gold)",
+                textShadow: "0 0 30px var(--accent-gold-glow)",
+              }}
+            >
               +100 XP
             </motion.p>
             <motion.button
@@ -428,12 +518,27 @@ function BossContent({ data }: { data: TopicData }) {
             >
               👹
             </motion.div>
-            <h1 className="font-display font-bold mb-3" style={{ fontSize: "clamp(24px, 5vw, 36px)", color: "var(--accent-rose)", letterSpacing: "0.06em" }}>
+            <h1
+              className="font-display font-bold mb-3"
+              style={{
+                fontSize: "clamp(24px, 5vw, 36px)",
+                color: "var(--accent-rose)",
+                letterSpacing: "0.06em",
+              }}
+            >
               Defeated
             </h1>
-            <p className="font-sans mb-8 max-w-sm" style={{ color: "var(--text-secondary)", lineHeight: 1.75, fontSize: "clamp(14px, 3vw, 16px)" }}>
+            <p
+              className="font-sans mb-8 max-w-sm"
+              style={{
+                color: "var(--text-secondary)",
+                lineHeight: 1.75,
+                fontSize: "clamp(14px, 3vw, 16px)",
+              }}
+            >
               You&apos;ll get it next time. The Warden is patient.
-              <br />Every attempt makes you sharper.
+              <br />
+              Every attempt makes you sharper.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
               <motion.button
@@ -446,7 +551,10 @@ function BossContent({ data }: { data: TopicData }) {
                 The Warden Respects Persistence →
               </motion.button>
               <Link href={`/learn/${data.id}`} className="flex-1">
-                <button className="btn-ghost w-full" style={{ padding: "14px 20px", borderRadius: "12px", fontSize: "14px" }}>
+                <button
+                  className="btn-ghost w-full"
+                  style={{ padding: "14px 20px", borderRadius: "12px", fontSize: "14px" }}
+                >
                   Review Lesson
                 </button>
               </Link>
@@ -460,14 +568,22 @@ function BossContent({ data }: { data: TopicData }) {
 
 export default function BossPage() {
   const params = useParams();
+  const router = useRouter();
   const topic = params.topic as string;
   const [data, setData] = useState<TopicData | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     import(`@/content/statistics/${topic}.json`)
       .then((mod) => setData(mod.default))
-      .catch(() => {});
+      .catch(() => setLoadError(true));
   }, [topic]);
+
+  useEffect(() => {
+    if (loadError) router.replace("/world");
+  }, [loadError, router]);
+
+  if (loadError) return null;
 
   if (!data) {
     return (

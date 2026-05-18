@@ -29,12 +29,15 @@ function VictoryContent() {
   const [cardFlipped, setCardFlipped] = useState(false);
 
   useEffect(() => {
-    if (topicId) {
-      import(`@/content/statistics/${topicId}.json`)
-        .then((mod) => setData(mod.default))
-        .catch(() => {});
+    // No topic param = direct URL access with no context → go to world map
+    if (!topicId) {
+      router.replace("/world");
+      return;
     }
-  }, [topicId]);
+    import(`@/content/statistics/${topicId}.json`)
+      .then((mod) => setData(mod.default))
+      .catch(() => router.replace("/world"));
+  }, [topicId, router]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;

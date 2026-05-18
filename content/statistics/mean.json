@@ -72,9 +72,9 @@
       {
         "question": "Mean of 6, 8, 10, 12 is 9. A new value of 5 is added. What is the new mean?",
         "options": ["7.5", "8", "8.2", "9"],
-        "correct": 1,
+        "correct": 2,
         "damage": 1,
-        "explanation": "Old sum = 9×4 = 36. New sum = 36+5 = 41. New N = 5. New mean = 41÷5 = 8.2. Wait — 8.2! The correct answer is 8.2."
+        "explanation": "Old sum = 9×4 = 36. New sum = 36+5 = 41. New N = 5. New mean = 41÷5 = 8.2."
       },
       {
         "question": "If every value in a dataset increases by 10, what happens to the mean?",
